@@ -42,7 +42,7 @@ module mkVectorDot (VD);
                             address: zeroExtend(pos_a),
                             datain: ?});
 
-        if (pos_a < dim*zeroExtend(i + 1) - 1)  // We need to take data from dim*i to dim*(i+1) and stop when we read dim*zeroExtend(i + 1)th value otherwise we will do an extra read which will trigger multiply block and make the result incorrect for the next iteration
+        if (pos_a < dim*(zeroExtend(i) + 1))  // We need to take data from dim*i to dim*(i+1)
             pos_a <= pos_a + 1;
         else done_a <= True;
 
@@ -56,7 +56,7 @@ module mkVectorDot (VD);
                 address: zeroExtend(pos_b),
                 datain: ?});
 
-        if (pos_b < dim*zeroExtend(i + 1) - 1)  // Same reason as above
+        if (pos_b < dim*(zeroExtend(i) + 1))  // Same reason as above
             pos_b <= pos_b + 1;
         else done_b <= True;
     
@@ -73,6 +73,7 @@ module mkVectorDot (VD);
         
         if (pos_out == dim-1) begin
             done_all <= True;
+            ready_start <= False;   // Stop reading new values from BRAM after we are done otherwise we'll never progress beyond one dot product due to start's guard
         end
 
         req_a_ready <= False;
@@ -95,7 +96,6 @@ module mkVectorDot (VD);
     endmethod
 
     method ActionValue#(Bit#(32)) response() if (done_all);
-        ready_start <= False;   // Need to reset this after returning response otherwise module will not proceed beyond 1 dot product
         return output_res;
     endmethod
 
