@@ -2,12 +2,12 @@
 
 3.  Shifters
 
->>
+>> Dynamic: 16X1 Mux will be used with 4 bit select line and each entry to be selected will be 16-bits wide
 
->>
+>> Static: Static shift just uses wires to set fixed number of bits to 0. So no Mux is used.
 
->>
+>> Barrel: 4  2X1 Mux with bit width of 16-bits are used.
 
 ---
 
-Time spent on Part 1: _____
+Time spent on Part 1: 20min
